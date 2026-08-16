@@ -3,12 +3,12 @@
 //
 #ifndef UNINSTALLER_CODING_H
 #define UNINSTALLER_CODING_H
-#include "std.hpp"
+#include <base/std.h>
 
 // 解决 byte 冲突问题
 #ifdef _MSC_VER
 #else
-// MinGW 环境下，取消 Windows 的 byte 定义，使用 std::byte
+// MinGW 环境下，取消 Windows 的 byte 定义，使用 std.h::byte
 #ifdef byte
 #undef byte
 #endif

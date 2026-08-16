@@ -1,5 +1,6 @@
 <RCC>
     <qresource prefix="/">
         <file>appicon.ico</file>
+        <file>i18n/en_US.qm</file>
     </qresource>
 </RCC>

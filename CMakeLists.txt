@@ -1,39 +1,65 @@
 ﻿cmake_minimum_required(VERSION 3.20)
 set(PROJECT_NAME "uninstaller")
 
-# 工具链（必须在 project() 之前设置，否则编译器会在 project() 阶段被锁定为 PATH 中的 g++）
-#set(TOOLCHAIN_BIN_DIR "D:/CZH720/tools/Qt/Tools/llvm-mingw1706_64/bin")
-#set(CMAKE_C_COMPILER    "${TOOLCHAIN_BIN_DIR}/clang.exe")
-#set(CMAKE_CXX_COMPILER  "${TOOLCHAIN_BIN_DIR}/clang++.exe")
-#set(CMAKE_RC_COMPILER   "${TOOLCHAIN_BIN_DIR}/llvm-rc.exe")
-#set(CMAKE_AR            "${TOOLCHAIN_BIN_DIR}/llvm-ar.exe")
-#set(CMAKE_RANLIB        "${TOOLCHAIN_BIN_DIR}/llvm-ranlib.exe")
-#set(CMAKE_MAKE_PROGRAM  "D:/CZH720/tools/Qt/Tools/Ninja/ninja.exe" CACHE FILEPATH "Ninja build tool" FORCE)
-
-# 1. 强制指定使用 LLD 链接器（必须在 project() 之前设置，确保全局生效）
+# --- [1] Toolchain Setup (Keep as you have it) ---
+set(TOOLCHAIN_BIN_DIR "D:/MainAppx/llvm/llvm-mingw-20260616-ucrt-x86_64/bin")
+#set(CMAKE_C_COMPILER "${TOOLCHAIN_BIN_DIR}/clang++.exe")
 set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
 set(CMAKE_EXE_LINKER_FLAGS    "${CMAKE_EXE_LINKER_FLAGS} -fuse-ld=lld")
 set(CMAKE_SHARED_LINKER_FLAGS "${CMAKE_SHARED_LINKER_FLAGS} -fuse-ld=lld")
-
-project(${PROJECT_NAME} LANGUAGES CXX)
-
 set(CMAKE_CXX_STANDARD 23)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
 set(CMAKE_AUTOMOC ON)
-set(CMAKE_AUTORCC ON)
 
-# 设置 Qt 路径
-#set(CMAKE_PREFIX_PATH "D:/CZH720/tools/Qt/6.10.3/llvm-mingw_64")
+project(${PROJECT_NAME} LANGUAGES CXX)
 
 find_package(Qt6 REQUIRED COMPONENTS Core Widgets Gui)
 
-# 添加子目录
+# --- [2] Find lrelease tool ---
+find_program(LRELEASE_EXE lrelease HINTS "${Qt6_Core_DIR}/../bin")
+
 add_subdirectory(api)
 
-# 定义主程序（附带 Windows 资源文件，包含程序图标）
-add_executable(${PROJECT_NAME} WIN32 main.cpp appicon.rc assets/appicon.qrc)
+# --- [3] Generate .qm files from .ts (Fixed Version) ---
 
-# 链接库
+# 1. Find all .ts files using absolute paths to avoid ambiguity
+file(GLOB TS_FILES CONFIGURE_PATHES "assets/i18n/*.ts")
+
+# Note: If your CMake version doesn't support CONFIGURE_PATHES, use this instead:
+file(GLOB TS_FILES "assets/i18n/*.ts")
+
+set(GENERATED_QM_FILES "")
+
+foreach(TS_FILE ${TS_FILES})
+    # We must work with absolute paths so Ninja knows exactly which file is being made
+    get_filename_component(ABS_TS "${TS_FILE}" REALPATH)
+
+    # Get the directory and filename without extension
+    get_filename_component(DIR_NAME "${ABS_TS}" DIRECTORY)
+    get_filename_component(FILE_WE "${ABS_TS}" NAME_WE)
+
+    # Define the output path as an absolute path
+    set(OUT_QM "${DIR_NAME}/${FILE_WE}.qm")
+
+    # Add the command
+    add_custom_command(
+            OUTPUT "${OUT_QM}"
+            COMMAND ${LRELEASE_EXE} "${ABS_TS}"
+            DEPENDS "${ABS_TS}"
+            COMMENT "Compiling TS to QM: ${ABS_TS} -> ${OUT_QM}"
+    )
+
+    # Add the absolute path of the .qm to our list
+    list(APPEND GENERATED_QM_FILES "${OUT_QM}")
+endforeach()
+
+message(NOTICE "-- Generated QM files (Absolute): ${GENERATED_QM_FILES}")
+
+# --- [4] Main Executable ---
+# Use ${RESOURCES_VAR} which contains the path to the generated .cpp file
+add_executable(${PROJECT_NAME} main.cpp appicon.rc assets/res.qrc)
+
+# --- [5] Linking & Windows Settings (Keep your existing logic) ---
 target_link_libraries(${PROJECT_NAME} PRIVATE
         api
         Qt6::Core
@@ -43,28 +69,19 @@ target_link_libraries(${PROJECT_NAME} PRIVATE
         shell32
 )
 
-# --- 修正 Windows 子系统判断逻辑 ---
-# Clang on Windows (MinGW) 既不是 MSVC 也不是 GNUCXX (它是 Clang)
-# 所以原来的 elseif(CMAKE_COMPILER_IS_GNUCXX) 对 Clang 无效
 if(WIN32)
-    # 无论是 MSVC 还是 Clang-MinGW，都推荐使用 /SUBSYSTEM:WINDOWS
-    # Clang-cl 支持 /SUBSYSTEM，Clang-MinGW 也支持通过链接器传递该参数
     if(MSVC)
-        target_link_options(${PROJECT_NAME} PRIVATE /SUBSYSTEM:WINDOWS)
+        target_link_options(${PROJECT_NAME} PRIVATE)# /SUBSYSTEM:WINDOWS)
     else()
-        # 对于 MinGW/Clang，使用 -mwindows 是最稳妥的方式
-        # 它会自动处理子系统设置并链接必要的 GUI 库
-        target_link_options(${PROJECT_NAME} PRIVATE -mwindows)
+        target_link_options(${PROJECT_NAME} PRIVATE)# -mwindows)
     endif()
 endif()
 
-# 部署 Qt DLL
-find_program(WINDEPLOYQT windeployqt HINTS "${CMAKE_PREFIX_PATH}/bin")
+# --- [6] Deployment ---
+find_program(WINDEPLOYQT windeployqt HINTS "${Qt6_Core_DIR}/../bin")
 if(WINDEPLOYQT)
     add_custom_command(TARGET ${PROJECT_NAME} POST_BUILD
             COMMAND ${WINDEPLOYQT} --no-translations "$<TARGET_FILE_DIR:${PROJECT_NAME}>/${PROJECT_NAME}.exe"
             COMMENT "Deploying Qt runtime dependencies..."
     )
-else()
-    message(WARNING "windeployqt not found! Qt dependencies will be missing.")
 endif()

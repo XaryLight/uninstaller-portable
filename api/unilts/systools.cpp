@@ -1,8 +1,6 @@
-#include "systools.hpp"
-#include "coding.hpp"
-#include <chrono>
-#include <windows.h>
-#include <QCoreApplication>
+#include "systools.h"
+#include <str/coding.h>
+#include <base/qt.h>
 
 ll informat::getsize(std::string& path){
     if (path.empty()) return 0;

@@ -1,12 +1,13 @@
 #include <windows.h>
+#include <res/expr.h>
 
 // 程序主图标，编译进 exe，作为文件图标与默认窗口图标。
 IDI_APP_ICON ICON "assets/appicon.ico"
 
-// 版本信息：与 api/ui/version.hpp 中的 APP_VERSION / APP_VERSION_SUFFIX 保持一致。
+// 版本信息：与 api/ui/version.h.hpp 中的 APP_VERSION / APP_VERSION_SUFFIX 保持一致。
 // 注意：llvm-rc 无法解析 VERSIONINFO 里的非 ASCII 字符，故此处 VALUE 使用英文/数字；
 // 文件属性中显示的版本为数字主版本（如 0.0.0），中文“试用版”后缀在窗口标题与“关于”中展示。
-// 更新版本号时请同步修改 version.hpp 与下面的 FILEVERSION/PRODUCTVERSION/FileVersion/ProductVersion。
+// 更新版本号时请同步修改 version.h.hpp 与下面的 FILEVERSION/PRODUCTVERSION/FileVersion/ProductVersion。
 VS_VERSION_INFO VERSIONINFO
  FILEVERSION 0,0,1,0
  PRODUCTVERSION 0,0,1,0

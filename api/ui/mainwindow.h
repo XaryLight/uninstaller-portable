@@ -4,10 +4,10 @@
 
 #ifndef UNINSTALLER_MAINWINDOW_H
 #define UNINSTALLER_MAINWINDOW_H
-#include "registry.hpp"
-#include "global.hpp"
-#include "std.hpp"
-#include "qt.hpp"
+#include <reg/registry.h>
+#include <res/global.h>
+#include <base/std.h>
+#include <base/qt.h>
 
 using namespace std;
 

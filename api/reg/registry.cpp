@@ -1,11 +1,10 @@
-﻿// registry.cpp
+﻿// registry.h.cpp
 // Created by xu.bw on 2026/6/6.
-#include "registry.hpp"
-#include "systools.hpp"
-#include "place.hpp"
-#include <QCoreApplication>
-#include <fstream>
-#include <tlhelp32.h>
+#include "registry.h"
+#include <base/qt.h>
+#include <res/place.h>
+#include <str/coding.h>
+#include <unilts/systools.h>
 
 // 前向声明：normalizeCommandLineForArgv 会调用它，而它定义在下方。
 static bool splitExeAndParams(const std::wstring& cmd, std::wstring& exePath, std::wstring& params);
@@ -95,7 +94,7 @@ static bool splitExeAndParams(const std::wstring& cmd, std::wstring& exePath, st
 
 std::vector<SoftwareInfo> Registry::getAllInstalledSoftware() {
     std::vector<SoftwareInfo> softwareList;
-    // 使用 place.hpp 中定义的路径
+    // 使用 place.h.hpp 中定义的路径
     for (const auto& [hive, path] : registryPaths) {
         enumRegistrySoftware(hive, path, softwareList);
     }

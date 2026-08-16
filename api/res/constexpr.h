@@ -5,7 +5,7 @@
 #ifndef UNINSTALLER_CONSTEXPR_H
 #define UNINSTALLER_CONSTEXPR_H
 
-#include "std.hpp"
+#include <base/std.h>
 
 // Const int exprcoding
 constexpr int LANGSIZE{63};             //Language array size (实际条目数，避免越界与常量膨胀).
@@ -15,6 +15,7 @@ constexpr short SIZEUNITESLEN{6};       //Size types.
 constexpr short OSERRORTYPES{10};
 
 // Const string exprcoding
+constexpr const char * PATH_ICON{""};
 constexpr std::array<const char *, SOFTWARETYPE> SWSORTS{
     "Normal",
     "WindowsInstaller",

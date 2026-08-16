@@ -1,12 +1,11 @@
 ﻿//
 // Created by xu.bw on 2026/6/6.
-// registry.h
+// registry.h.h
 #ifndef REGISTRY_H
 #define REGISTRY_H
 
-#include "std.hpp"
-#include "struct.hpp"
-#include "coding.hpp"
+#include <base/std.h>
+#include <base/struct.h>
 
 class Registry {
 public:

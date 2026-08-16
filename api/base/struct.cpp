@@ -1,4 +1,4 @@
-#include "struct.hpp"
+#include "struct.h"
 
 filesize_t::filesize_t(ld _t): size(_t){
     this->format_size=formatS();

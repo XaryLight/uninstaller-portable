@@ -1,7 +1,7 @@
 // The struct handle include all base struct.
 #pragma once
-#include "std.hpp"
-#include "global.hpp"
+#include "std.h"
+#include <res/global.h>
 
 
 struct filesize_t{

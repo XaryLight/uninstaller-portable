@@ -6,6 +6,7 @@
 #include <map>
 #include <set>
 #include <array>
+#include <chrono>
 #include <string>
 #include <vector>
 #include <format>
@@ -18,8 +19,10 @@
 #include <fileapi.h>
 #include <algorithm>
 #include <windows.h>
-#include <filesystem>
+#include <shellapi.h>
+#include <tlhelp32.h>
 #include <string_view>
+
 #if __has_include(<filesystem>)
     #include <filesystem>
     namespace fs = std::filesystem;
@@ -37,14 +40,5 @@ using ll = long long;
 using ull = unsigned long long;
 using ld = long double;
 
-// mingw64
-using i128 = long long;
-using ui128 = unsigned long long;
-
-
 // spacename
-//using namespace std;
-
-namespace func {
-    bool similarly(int x, const std::vector<int>& l);
-}
+//using namespace std.h;

@@ -1,5 +1,5 @@
 #pragma once
-#include "std.hpp"
+#include <base/std.h>
 
 
 const std::array<std::pair<HKEY, const char *>, 3> registryPaths {

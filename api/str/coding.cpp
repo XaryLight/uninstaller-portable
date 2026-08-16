@@ -1,7 +1,7 @@
 //
 // Created by xu.bw on 2026/6/7.
 //
-#include "coding.hpp"
+#include <str/coding.h>
 
 // 编码转换函数实现
 std::string utf8ToGbk(const std::string& utf8Str) {

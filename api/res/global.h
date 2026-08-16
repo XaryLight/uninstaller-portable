@@ -4,8 +4,8 @@
 
 #ifndef UNINSTALLER_GLABE_H
 #define UNINSTALLER_GLABE_H
-#include "constexpr.hpp"
-#include "std.hpp"
+#include "constexpr.h"
+#include <base/std.h>
 
 inline struct global {
     // The language option. 0: us-en, 1: zh-cn

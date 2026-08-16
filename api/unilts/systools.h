@@ -1,6 +1,6 @@
-#include "std.hpp"
-#include "struct.hpp"
-#include "global.hpp"
+#include <base/std.h>
+#include <res/global.h>
+#include <base/struct.h>
 
 namespace informat{
     ll getsize(std::string& path);
