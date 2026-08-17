@@ -15,7 +15,9 @@ constexpr short SIZEUNITESLEN{6};       //Size types.
 constexpr short OSERRORTYPES{10};
 
 // Const string exprcoding
-constexpr const char * PATH_ICON{""};
+constexpr const char * PATH_ICON{":/appicon.ico"};
+constexpr const char * PATH_LANGBASE{":/i18n/"};
+constexpr const char * PATH_LANGDEFAULT{":/i18n/"};
 constexpr std::array<const char *, SOFTWARETYPE> SWSORTS{
     "Normal",
     "WindowsInstaller",

@@ -4,6 +4,7 @@
 #include "mainwindow.h"
 #include <res/version.h>
 
+
 // 大小列专用表格项：按字节数（UserRole）排序，而不是按 "3.43 GB" / "344.02 MB" 文本排序。
 class SizeTableItem : public QTableWidgetItem {
 public:
@@ -634,7 +635,7 @@ void UninstallerWindow::built_list() {
         auto sw = &m_softwareList[i];
         sw->registryInit();
         total_size += sw->size.size;
-        progress.setLabelText(tr("Loading: %1, %2/%3 - found: %4")
+        progress.setLabelText(G.TRANSLATOR->tr("Loading: %1, %2/%3 - found: %4")
             .arg(QString::fromStdString(sw->displayName))
             .arg(i)
             .arg(len)
@@ -757,13 +758,13 @@ void UninstallerWindow::uninstallSelected() {
 
     QMessageBox box(this);
     box.setIcon(QMessageBox::Question);
-    box.setWindowTitle(tr("Ensure uninstaller"));
+    box.setWindowTitle(G.TRANSLATOR->tr("Ensure uninstaller"));
     box.setText(
         tr("Sure to uninstaller the following software?\n\nSoftware: %1 Version: %2\n\nNote: It may take a while to uninstall, please wait patiently.")
         .arg(name)
         .arg(ver));
     if (!cmd.isEmpty()) {
-        box.setInformativeText(tr("Command to execute:") + "\n" + stripCommandQuotes(cmd));
+        box.setInformativeText(G.TRANSLATOR->tr("Command to execute:") + "\n" + stripCommandQuotes(cmd));
     }
     box.setStandardButtons(QMessageBox::Yes | QMessageBox::No);
     box.setDefaultButton(QMessageBox::No);
@@ -772,7 +773,7 @@ void UninstallerWindow::uninstallSelected() {
     if (m_busy) return;
     m_busy = true;
 
-    QProgressDialog progress(tr("Uninstalling %1 ...").arg(name),
+    QProgressDialog progress(G.TRANSLATOR->tr("Uninstalling %1 ...").arg(name),
         tr("Clean"), 0, 0, this);
     progress.setWindowModality(Qt::WindowModal);
     progress.setMinimumDuration(0);
@@ -817,12 +818,12 @@ void UninstallerWindow::onTableContextMenu(const QPoint& pos) {
     if (!softwareAtRow(row)) return;
 
     QMenu menu(this);
-    QAction* actUninstall = menu.addAction(tr("Uninstall selected software"));
-    QAction* actScan = menu.addAction(tr("Scan files"));
-    QAction* actDetail = menu.addAction(tr("Look detail"));
-    QAction* actOpen = menu.addAction(tr("Open file location"));
+    QAction* actUninstall = menu.addAction(G.TRANSLATOR->tr("Uninstall selected software"));
+    QAction* actScan = menu.addAction(G.TRANSLATOR->tr("Scan files"));
+    QAction* actDetail = menu.addAction(G.TRANSLATOR->tr("Look detail"));
+    QAction* actOpen = menu.addAction(G.TRANSLATOR->tr("Open file location"));
     menu.addSeparator();
-    QAction* actCopy = menu.addAction(tr("Copy uninstall command"));
+    QAction* actCopy = menu.addAction(G.TRANSLATOR->tr("Copy uninstall command"));
     QAction* actDelReg = menu.addAction(QString::fromUtf8(u8"删除残留注册表项"));
     QAction* actForceDel = menu.addAction(QString::fromUtf8(u8"强制删除此条目"));
 
@@ -888,7 +889,7 @@ void UninstallerWindow::scanResiduals() {
 
     // 显示残留文件列表
     QDialog dialog(this);
-    dialog.setWindowTitle(tr("File list"));
+    dialog.setWindowTitle(G.TRANSLATOR->tr("File list"));
     dialog.resize(600, 400);
 
     QVBoxLayout* layout = new QVBoxLayout(&dialog);
@@ -906,8 +907,8 @@ void UninstallerWindow::scanResiduals() {
     textEdit->setText(content);
     layout->addWidget(textEdit);
 
-    QPushButton* deleteBtn = new QPushButton(tr("Delete all"), &dialog);
-    QPushButton* cancelBtn = new QPushButton(tr("Clean"), &dialog);
+    QPushButton* deleteBtn = new QPushButton(G.TRANSLATOR->tr("Delete all"), &dialog);
+    QPushButton* cancelBtn = new QPushButton(G.TRANSLATOR->tr("Clean"), &dialog);
 
     QHBoxLayout* btnLayout = new QHBoxLayout();
     btnLayout->addWidget(deleteBtn);
@@ -1171,7 +1172,7 @@ void UninstallerWindow::showDetailDialog(int row) {
     }
 
     QDialog dlg(this);
-    dlg.setWindowTitle(tr("Software Details"));
+    dlg.setWindowTitle(G.TRANSLATOR->tr("Software Details"));
     dlg.resize(600, 580);
 
     QVBoxLayout* root = new QVBoxLayout(&dlg);
@@ -1185,7 +1186,7 @@ void UninstallerWindow::showDetailDialog(int row) {
     QVBoxLayout* titleBox = new QVBoxLayout();
     QLabel* nameLbl = new QLabel(QString::fromStdString(sw->displayName));
     nameLbl->setStyleSheet("font-size:16px; font-weight:bold;");
-    QLabel* verLbl = new QLabel(tr("Version") + ": " + QString::fromStdString(sw->displayVersion));
+    QLabel* verLbl = new QLabel(G.TRANSLATOR->tr("Version") + ": " + QString::fromStdString(sw->displayVersion));
     verLbl->setStyleSheet("color:#9da3ad;");
     titleBox->addWidget(nameLbl);
     titleBox->addWidget(verLbl);
@@ -1204,18 +1205,18 @@ void UninstallerWindow::showDetailDialog(int row) {
     QFormLayout* form = new QFormLayout();
     form->setLabelAlignment(Qt::AlignRight);
     form->setFieldGrowthPolicy(QFormLayout::AllNonFixedFieldsGrow);
-    form->addRow(tr("Scan:"), new QLabel(QString::fromStdString(sw->displayName)));
-    form->addRow(tr("Version"), new QLabel(QString::fromStdString(sw->displayVersion)));
-    form->addRow(tr("Publisher"), new QLabel(QString::fromStdString(sw->publisher)));
-    form->addRow(tr("Install time"), new QLabel(QString::fromStdString(sw->installDate)));
-    form->addRow(tr("Size"), new QLabel(QString::fromStdString(sw->size.get())));
+    form->addRow(G.TRANSLATOR->tr("Scan:"), new QLabel(QString::fromStdString(sw->displayName)));
+    form->addRow(G.TRANSLATOR->tr("Version"), new QLabel(QString::fromStdString(sw->displayVersion)));
+    form->addRow(G.TRANSLATOR->tr("Publisher"), new QLabel(QString::fromStdString(sw->publisher)));
+    form->addRow(G.TRANSLATOR->tr("Install time"), new QLabel(QString::fromStdString(sw->installDate)));
+    form->addRow(G.TRANSLATOR->tr("Size"), new QLabel(QString::fromStdString(sw->size.get())));
 
     QString typeStr = sw->isWindowsInstaller ? "Windows Installer (MSI)"
                      : sw->isSystemComponent ? "系统组件" : "普通程序";
     form->addRow("类型", new QLabel(typeStr));
     QString statusStr = sw->isOrphaned ? QString::fromUtf8(u8"残留（卸载程序不存在）") : QString::fromUtf8(u8"正常");
     form->addRow(QString::fromUtf8(u8"状态"), new QLabel(statusStr));
-    form->addRow(tr("Install place"), roLine(stripQuotes(QString::fromStdString(sw->installLocation))));
+    form->addRow(G.TRANSLATOR->tr("Install place"), roLine(stripQuotes(QString::fromStdString(sw->installLocation))));
     form->addRow("注册表位置", roLine(QString::fromStdString(sw->orgPath)));
 
     QTextEdit* uninstallEdit = new QTextEdit(stripCommandQuotes(QString::fromStdString(sw->uninstallString)));
@@ -1224,9 +1225,9 @@ void UninstallerWindow::showDetailDialog(int row) {
     form->addRow("卸载命令", uninstallEdit);
 
     if (!sw->helpLink.empty())
-        form->addRow(tr("Help link: "), roLine(QString::fromStdString(sw->helpLink)));
+        form->addRow(G.TRANSLATOR->tr("Help link: "), roLine(QString::fromStdString(sw->helpLink)));
     if (!sw->urlInfoAbout.empty())
-        form->addRow(tr("Infor web"), roLine(QString::fromStdString(sw->urlInfoAbout)));
+        form->addRow(G.TRANSLATOR->tr("Infor web"), roLine(QString::fromStdString(sw->urlInfoAbout)));
 
     root->addLayout(form);
 
@@ -1236,11 +1237,11 @@ void UninstallerWindow::showDetailDialog(int row) {
     root->addWidget(funcTitle);
 
     QGridLayout* funcGrid = new QGridLayout();
-    QPushButton* btnOpen = new QPushButton(tr("Open file location"));
-    QPushButton* btnUninstall = new QPushButton(tr("Uninstall selected software"));
+    QPushButton* btnOpen = new QPushButton(G.TRANSLATOR->tr("Open file location"));
+    QPushButton* btnUninstall = new QPushButton(G.TRANSLATOR->tr("Uninstall selected software"));
     btnUninstall->setObjectName("uninstallBtn");
-    QPushButton* btnScan = new QPushButton(tr("Scan files"));
-    QPushButton* btnCopy = new QPushButton(tr("Export software list"));
+    QPushButton* btnScan = new QPushButton(G.TRANSLATOR->tr("Scan files"));
+    QPushButton* btnCopy = new QPushButton(G.TRANSLATOR->tr("Export software list"));
     funcGrid->addWidget(btnOpen, 0, 0);
     funcGrid->addWidget(btnUninstall, 0, 1);
     funcGrid->addWidget(btnScan, 1, 0);
@@ -1256,7 +1257,7 @@ void UninstallerWindow::showDetailDialog(int row) {
     // 关闭
     QHBoxLayout* closeBox = new QHBoxLayout();
     closeBox->addStretch();
-    QPushButton* btnClose = new QPushButton(tr("Clean"));
+    QPushButton* btnClose = new QPushButton(G.TRANSLATOR->tr("Clean"));
     closeBox->addWidget(btnClose);
     root->addLayout(closeBox);
 
@@ -1503,7 +1504,7 @@ void UninstallerWindow::filterSoftware() {
         }
     }
 
-    statusBar()->showMessage(tr("Found: %1, Total size: %2").arg(visibleCount).arg(QString::fromStdString(visibleSize.get())));
+    statusBar()->showMessage(G.TRANSLATOR->tr("Found: %1, Total size: %2").arg(visibleCount).arg(QString::fromStdString(visibleSize.get())));
 }
 
 void UninstallerWindow::setupUI() {
@@ -1513,7 +1514,7 @@ void UninstallerWindow::setupUI() {
 
     setStyleSheet(kAppStyleSheet);
 
-    setWindowTitle(tr("Uninstaller") + " " + appVersionFull());
+    setWindowTitle(G.TRANSLATOR->tr("Uninstaller") + " " + appVersionFull());
     resize(G.WINDOWS_SIZE[0], G.WINDOWS_SIZE[1]);
 
     QWidget* centralWidget = new QWidget(this);
@@ -1524,10 +1525,10 @@ void UninstallerWindow::setupUI() {
 
     // 菜单栏
     bar = menuBar();
-    actionMenu = bar->addMenu(tr("Option"));
-    actionMenu->addAction(tr("Uninstall selected software"), this, &UninstallerWindow::uninstallSelected);
-    actionMenu->addAction(tr("Scan files"), this, &UninstallerWindow::scanResiduals);
-    actionMenu->addAction(tr("Look detail"), this, &UninstallerWindow::showDetails);
+    actionMenu = bar->addMenu(G.TRANSLATOR->tr("Option"));
+    actionMenu->addAction(G.TRANSLATOR->tr("Uninstall selected software"), this, &UninstallerWindow::uninstallSelected);
+    actionMenu->addAction(G.TRANSLATOR->tr("Scan files"), this, &UninstallerWindow::scanResiduals);
+    actionMenu->addAction(G.TRANSLATOR->tr("Look detail"), this, &UninstallerWindow::showDetails);
 
     // “本程序”菜单：提供卸载自身的能力（区别于卸载列表中的其他软件）。
     QMenu* selfMenu = bar->addMenu(QString::fromUtf8(u8"本程序"));
@@ -1535,19 +1536,19 @@ void UninstallerWindow::setupUI() {
     selfMenu->addSeparator();
     selfMenu->addAction(QString::fromUtf8(u8"关于"), this, &UninstallerWindow::showAbout);
 
-    QMenu* devMenu = bar->addMenu(tr("Settings"));
-    m_showSystemAction = devMenu->addAction(tr("Developer"), this, &UninstallerWindow::toggleShowSystemComponents);
+    QMenu* devMenu = bar->addMenu(G.TRANSLATOR->tr("Settings"));
+    m_showSystemAction = devMenu->addAction(G.TRANSLATOR->tr("Developer"), this, &UninstallerWindow::toggleShowSystemComponents);
     m_showSystemAction->setCheckable(true);
     m_showSystemAction->setChecked(m_showSystemComponents);
-    devMenu->addAction(tr("Show system components"), this, &UninstallerWindow::exportSoftwareList);
-    devMenu->addAction(tr("Export software list"), this, &UninstallerWindow::copyUninstallCommand);
-    devMenu->addAction(tr("Debug information"), this, &UninstallerWindow::showDevInfo);
+    devMenu->addAction(G.TRANSLATOR->tr("Show system components"), this, &UninstallerWindow::exportSoftwareList);
+    devMenu->addAction(G.TRANSLATOR->tr("Export software list"), this, &UninstallerWindow::copyUninstallCommand);
+    devMenu->addAction(G.TRANSLATOR->tr("Debug information"), this, &UninstallerWindow::showDevInfo);
 
     // 工具栏
     QHBoxLayout* toolBar = new QHBoxLayout();
 
     m_searchEdit = new QLineEdit(this);
-    m_searchEdit->setPlaceholderText(tr("Search software..."));
+    m_searchEdit->setPlaceholderText(G.TRANSLATOR->tr("Search software..."));
     connect(m_searchEdit, &QLineEdit::textChanged, this, &UninstallerWindow::filterSoftware);
 
     // Ctrl+F 快速聚焦搜索框
@@ -1557,14 +1558,14 @@ void UninstallerWindow::setupUI() {
         m_searchEdit->selectAll();
     });
 
-    QPushButton* refreshBtn = new QPushButton(tr("Refresh"), this);
+    QPushButton* refreshBtn = new QPushButton(G.TRANSLATOR->tr("Refresh"), this);
     refreshBtn->setObjectName("refreshBtn");
     connect(refreshBtn, &QPushButton::clicked, this, [this]() {
         built_list();       // 重新扫描注册表（反映新装/卸载的软件）
         loadSoftwareList(); // 重新加载并套用当前搜索过滤
     });
 
-    toolBar->addWidget(new QLabel(tr("Scan:")));
+    toolBar->addWidget(new QLabel(G.TRANSLATOR->tr("Scan:")));
     toolBar->addWidget(m_searchEdit);
     toolBar->addStretch();
     toolBar->addWidget(refreshBtn);
@@ -1604,15 +1605,15 @@ void UninstallerWindow::setupUI() {
     // 按钮栏
     QHBoxLayout* buttonBar = new QHBoxLayout();
 
-    QPushButton* uninstallBtn = new QPushButton(tr("Uninstall selected software"), this);
+    QPushButton* uninstallBtn = new QPushButton(G.TRANSLATOR->tr("Uninstall selected software"), this);
     uninstallBtn->setObjectName("uninstallBtn");
     connect(uninstallBtn, &QPushButton::clicked, this, &UninstallerWindow::uninstallSelected);
 
-    QPushButton* scanBtn = new QPushButton(tr("Scan files"), this);
+    QPushButton* scanBtn = new QPushButton(G.TRANSLATOR->tr("Scan files"), this);
     scanBtn->setObjectName("scanBtn");
     connect(scanBtn, &QPushButton::clicked, this, &UninstallerWindow::scanResiduals);
 
-    QPushButton* detailsBtn = new QPushButton(tr("Look detail"), this);
+    QPushButton* detailsBtn = new QPushButton(G.TRANSLATOR->tr("Look detail"), this);
     detailsBtn->setObjectName("detailsBtn");
     connect(detailsBtn, &QPushButton::clicked, this, &UninstallerWindow::showDetails);
 

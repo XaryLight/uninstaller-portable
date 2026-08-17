@@ -10,6 +10,7 @@ set(CMAKE_SHARED_LINKER_FLAGS "${CMAKE_SHARED_LINKER_FLAGS} -fuse-ld=lld")
 set(CMAKE_CXX_STANDARD 23)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
 set(CMAKE_AUTOMOC ON)
+set(CMAKE_AUTORCC ON)
 
 project(${PROJECT_NAME} LANGUAGES CXX)
 
@@ -57,7 +58,7 @@ message(NOTICE "-- Generated QM files (Absolute): ${GENERATED_QM_FILES}")
 
 # --- [4] Main Executable ---
 # Use ${RESOURCES_VAR} which contains the path to the generated .cpp file
-add_executable(${PROJECT_NAME} main.cpp appicon.rc assets/res.qrc)
+add_executable(${PROJECT_NAME} WIN32 main.cpp assets/res.qrc appicon.rc)
 
 # --- [5] Linking & Windows Settings (Keep your existing logic) ---
 target_link_libraries(${PROJECT_NAME} PRIVATE
